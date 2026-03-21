@@ -1,10 +1,13 @@
 import csv
 import os
 import math
+import re
+import string
 from datetime import datetime, date
 
 # Configuration
-SEARCH_TERM = "Camus"
+SEARCH_TERM = ""
+SEARCH_MODE = "strict"  # "strict" or "loose"
 OUTPUT_MODE = "stdout"  # "stdout" or "csv"
 OUTPUT_DIR = "output"
 
@@ -29,10 +32,34 @@ def days_since(date_str: str) -> int:
         return 365 * 5  # Default to 5 years ago if parse fails
 
 
-def search_clues(search_term: str, output_dir: str) -> list[dict]:
+def strip_punctuation(text: str) -> str:
+    """Remove punctuation from text."""
+    return text.translate(str.maketrans('', '', string.punctuation))
+
+
+def matches_strict(text: str, pattern: re.Pattern) -> bool:
+    """Check if text contains the search term at word boundaries, ignoring punctuation."""
+    text_clean = strip_punctuation(text.lower())
+    return pattern.search(text_clean) is not None
+
+
+def matches_loose(text: str, terms: list[str]) -> bool:
+    """Check if all terms appear anywhere in text, including within other words."""
+    text_lower = text.lower()
+    return all(term in text_lower for term in terms)
+
+
+def search_clues(search_term: str, output_dir: str, mode: str = "strict") -> list[dict]:
     """Search all CSV files for clues containing the search term."""
     results = []
-    search_lower = search_term.lower()
+
+    if mode == "strict":
+        search_clean = strip_punctuation(search_term.lower())
+        pattern = re.compile(r'(?:^|\s)' + re.escape(search_clean) + r'(?:\s|$)')
+        match_fn = lambda text: matches_strict(text, pattern)
+    else:
+        terms = [t.lower() for t in search_term.split()]
+        match_fn = lambda text: matches_loose(text, terms)
 
     if not os.path.exists(output_dir):
         print(f"Output directory '{output_dir}' does not exist.")
@@ -52,10 +79,10 @@ def search_clues(search_term: str, output_dir: str) -> list[dict]:
             with open(filepath, 'r', encoding='utf-8') as f:
                 reader = csv.DictReader(f)
                 for row in reader:
-                    question = row.get('question', '').lower()
-                    answer = row.get('answer', '').lower()
+                    question = row.get('question', '')
+                    answer = row.get('answer', '')
 
-                    if search_lower in question or search_lower in answer:
+                    if match_fn(question) or match_fn(answer):
                         results.append({
                             'date': game_date,
                             'season': season,
@@ -119,7 +146,7 @@ def output_to_csv(results: list[dict], search_term: str):
 
 
 def main():
-    results = search_clues(SEARCH_TERM, OUTPUT_DIR)
+    results = search_clues(SEARCH_TERM, OUTPUT_DIR, SEARCH_MODE)
 
     if not results:
         print(f"No matches found for '{SEARCH_TERM}'")

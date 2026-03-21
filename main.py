@@ -6,7 +6,7 @@ import re
 import time
 
 # Configuration - Seasons to parse
-SEASONS_TO_PARSE = [30,31,32,33,34]
+SEASONS_TO_PARSE = [42]
 
 # Base URLs
 SEASON_URL = "https://j-archive.com/showseason.php?season={}"
@@ -38,7 +38,8 @@ def parse_clue_text(element) -> str:
     """Extract text from a clue, handling any nested elements."""
     if element is None:
         return ""
-    return element.get_text(strip=True)
+    text = element.get_text(separator=" ", strip=True)
+    return re.sub(r'\s+', ' ', text).strip()
 
 
 def get_game_date(soup: BeautifulSoup) -> str:
