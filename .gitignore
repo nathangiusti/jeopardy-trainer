@@ -1,6 +1,9 @@
 # Output data
 output/
 
+# Generated files
+jeopardy_game.html
+
 # Search results
 search_results_*.csv
 
