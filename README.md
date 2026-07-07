@@ -5,14 +5,20 @@ A toolset for scraping, searching, and playing Jeopardy! games from [J! Archive]
 ## Workflow
 
 ```
-parse_jarchive.py  →  output/season_XX/*.csv  →  jeopardy.py  →  jeopardy_game.html
-                                               →  search.py
-                                               →  canon/build.py  →  canon_data.js + canon_map.html
+scraper/parse_jarchive.py  →  output/season_XX/*.csv  →  game/jeopardy.py  →  jeopardy_game.html
+                                                       →  search/ (CLI + web UI)
+                                                       →  canon/build.py  →  canon_data.js + canon_map.html
 ```
+
+Each program lives in its own directory (`scraper/`, `search/`, `game/`, `canon/`);
+they all share the repo-root `output/` clue data, and generated artifacts
+(`jeopardy_game.html`, `canon_data.js`, `canon_map.zip`, `canon_review.csv`,
+`mention_cache.pkl`) land in the repo root. All paths are anchored to the repo
+root, so the scripts work from any working directory.
 
 ## Scripts
 
-### `parse_jarchive.py`
+### `scraper/parse_jarchive.py`
 
 Scrapes J! Archive and saves game data as CSV files.
 
@@ -20,18 +26,21 @@ Configure `SEASONS_TO_PARSE` at the top of the file, then run it. For each seaso
 
 Each CSV row contains: `category`, `value`, `round`, `question`, `answer`.
 
-### `search.py`
+### `search/` — clue search (CLI + web UI)
 
-Searches all downloaded CSV files for clues matching a term.
+Searches all downloaded CSV files for clues matching a term. `search_core.py`
+holds the shared matching/scoring logic; `search.py` is the CLI and
+`search_web.py` a local Flask UI (`py search/search_web.py`, opens the browser
+automatically).
 
-Configure `SEARCH_TERM`, `SEARCH_MODE`, and `OUTPUT_MODE` at the top of the file. Two search modes are supported:
+For the CLI, configure `SEARCH_TERM`, `SEARCH_MODE`, and `OUTPUT_MODE` at the top of the file. Two search modes are supported:
 
 - `strict` — matches whole words only, ignoring punctuation
 - `loose` — matches all terms anywhere in the text
 
 Results are ranked by recency and dollar value. Output can go to stdout or be saved as a CSV file (`search_results_*.csv`).
 
-### `jeopardy.py`
+### `game/jeopardy.py`
 
 Generates a playable Jeopardy! game as a self-contained HTML file.
 

@@ -17,10 +17,12 @@ from collections import Counter, defaultdict
 
 from . import preprocess, entities as entities_mod, taxonomy, associations as assoc_mod, affixes as affixes_mod, clue_classifier
 
-OUT_FILE = "canon_data.js"
-HTML_FILE = "canon_map.html"
-ZIP_FILE = "canon_map.zip"
-REVIEW_FILE = "canon_review.csv"
+# Artifacts live in the repo root (canon_map.html must sit next to
+# canon_data.js for its relative <script src> to resolve).
+OUT_FILE = os.path.join(preprocess.REPO_ROOT, "canon_data.js")
+HTML_FILE = os.path.join(preprocess.REPO_ROOT, "canon_map.html")
+ZIP_FILE = os.path.join(preprocess.REPO_ROOT, "canon_map.zip")
+REVIEW_FILE = os.path.join(preprocess.REPO_ROOT, "canon_review.csv")
 REVIEW_ROWS = 400
 
 
@@ -135,7 +137,7 @@ def build(output_dir: str = preprocess.OUTPUT_DIR, out_file: str = OUT_FILE):
     tax = taxonomy.load_taxonomy()
     harvested = harvest_review(clf)
     if harvested:
-        print(f"  harvested {harvested} manual tags from {REVIEW_FILE} into overrides")
+        print(f"  harvested {harvested} manual tags from {os.path.basename(REVIEW_FILE)} into overrides")
 
     title_topics = [clf.classify(c['category']) for c in clues]
     title_classified = sum(1 for t in title_topics if t != taxonomy.UNCLASSIFIED)
@@ -173,7 +175,7 @@ def build(output_dir: str = preprocess.OUTPUT_DIR, out_file: str = OUT_FILE):
     # Review worklist stays title-based: a manual tag for a whole category is
     # higher-quality than per-clue ML fills and should remain available.
     write_review(clues, title_topics)
-    print(f"  wrote {REVIEW_FILE} (top unclassified categories; fill the topic column and rebuild)")
+    print(f"  wrote {os.path.basename(REVIEW_FILE)} (top unclassified categories; fill the topic column and rebuild)")
 
     print("Serializing...")
     ent_list = sorted(ents.values(), key=lambda e: -e['score'])
@@ -226,18 +228,19 @@ def build(output_dir: str = preprocess.OUTPUT_DIR, out_file: str = OUT_FILE):
         f.write(";\n")
 
     size_mb = os.path.getsize(out_file) / 1e6
-    print(f"\nWrote {out_file} ({size_mb:.1f} MB) in {time.time() - t0:.0f}s")
+    print(f"\nWrote {os.path.basename(out_file)} ({size_mb:.1f} MB) in {time.time() - t0:.0f}s")
 
     # Shareable bundle: the page plus its data file is everything someone
-    # needs to unzip and open canon_map.html locally.
+    # needs to unzip and open canon_map.html locally. Flat arcnames so the
+    # zip never embeds local directory paths.
     if os.path.exists(HTML_FILE):
         with zipfile.ZipFile(ZIP_FILE, 'w', zipfile.ZIP_DEFLATED) as z:
-            z.write(HTML_FILE)
-            z.write(out_file)
-        print(f"Wrote {ZIP_FILE} ({os.path.getsize(ZIP_FILE) / 1e6:.1f} MB) "
-              f"- unzip & open {HTML_FILE} to view")
+            z.write(HTML_FILE, arcname=os.path.basename(HTML_FILE))
+            z.write(out_file, arcname=os.path.basename(out_file))
+        print(f"Wrote {os.path.basename(ZIP_FILE)} ({os.path.getsize(ZIP_FILE) / 1e6:.1f} MB) "
+              f"- unzip & open {os.path.basename(HTML_FILE)} to view")
     else:
-        print(f"WARNING: {HTML_FILE} not found - skipped {ZIP_FILE}")
+        print(f"WARNING: {os.path.basename(HTML_FILE)} not found - skipped {os.path.basename(ZIP_FILE)}")
 
     print(f"Summary: {len(clues)} clues | {len(ent_list)} entities | "
           f"{len(assocs)} associations | ref date {ref_date}")

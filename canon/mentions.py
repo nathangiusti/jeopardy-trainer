@@ -17,7 +17,7 @@ import pickle
 
 from . import preprocess
 
-CACHE_FILE = "mention_cache.pkl"
+CACHE_FILE = os.path.join(preprocess.REPO_ROOT, "mention_cache.pkl")
 BATCH_SIZE = 512
 SAVE_EVERY = 100000
 

@@ -16,7 +16,8 @@ import string
 import unicodedata
 from collections import Counter, defaultdict
 
-OUTPUT_DIR = "output"
+REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+OUTPUT_DIR = os.path.join(REPO_ROOT, "output")
 DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 
 # A surname alias only merges into a full name when that full name is the
