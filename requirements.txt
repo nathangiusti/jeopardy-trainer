@@ -1,0 +1,7 @@
+requests
+beautifulsoup4
+flask
+scikit-learn
+spacy>=3.8
+click
+# after installing: python -m spacy download en_core_web_sm

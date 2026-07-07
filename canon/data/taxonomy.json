@@ -1,0 +1,116 @@
+{
+  "Geography": [
+    "World Capitals",
+    "Countries of the World",
+    "World Cities",
+    "U.S. Geography",
+    "U.S. Cities",
+    "Bodies of Water",
+    "Mountains, Islands & Deserts",
+    "Landmarks & Museums",
+    "World Geography"
+  ],
+  "History": [
+    "American History",
+    "U.S. Presidents & First Ladies",
+    "World History",
+    "European Royalty & History",
+    "Ancient History",
+    "Wars & the Military",
+    "Explorers & Discovery",
+    "Historic Figures"
+  ],
+  "Literature": [
+    "Authors",
+    "Novels & Fiction",
+    "Literary Characters",
+    "Poetry & Poets",
+    "Shakespeare",
+    "Children's Literature",
+    "Books & Bestsellers",
+    "Quotations"
+  ],
+  "Science & Nature": [
+    "Animals",
+    "The Human Body & Medicine",
+    "Chemistry & the Elements",
+    "Physics",
+    "Astronomy & Space",
+    "Earth Science & Weather",
+    "Plants & Botany",
+    "Biology & Life Science",
+    "Scientists & Inventors",
+    "Math, Numbers & Measures",
+    "Technology & Computers",
+    "General Science"
+  ],
+  "Music": [
+    "Classical Music & Composers",
+    "Opera",
+    "Pop & Rock Music",
+    "Country, Jazz & Blues",
+    "Musical Instruments"
+  ],
+  "Fine Arts": [
+    "Art & Artists",
+    "Architecture & Sculpture",
+    "Ballet & Dance"
+  ],
+  "Stage & Screen": [
+    "Movies",
+    "Television",
+    "Theatre & Broadway",
+    "Actors & Entertainers",
+    "Awards & Honors"
+  ],
+  "Wordplay & Language": [
+    "Before & After",
+    "Word Origins & Etymology",
+    "Letter-Count Words",
+    "Rhymes, Puns & Puzzles",
+    "Vocabulary & Definitions",
+    "Foreign Words & Phrases",
+    "Languages",
+    "Phrases & Sayings",
+    "Grammar & Usage",
+    "Abbreviations & Symbols"
+  ],
+  "Religion, Myth & Philosophy": [
+    "The Bible",
+    "World Religions",
+    "Mythology",
+    "Philosophy & Thought"
+  ],
+  "Government, Law & Business": [
+    "U.S. Government & Politics",
+    "World Leaders",
+    "Law & Crime",
+    "Business & Brands",
+    "Money & Economics",
+    "Organizations & Institutions"
+  ],
+  "Sports & Games": [
+    "Sports",
+    "The Olympics",
+    "Games, Toys & Hobbies"
+  ],
+  "Food & Drink": [
+    "Food",
+    "Beverages & Potent Potables"
+  ],
+  "American Life & Culture": [
+    "Americana",
+    "Colleges & Universities",
+    "Holidays & Annual Events",
+    "Fashion & Style",
+    "Transportation",
+    "News & Media",
+    "Comics & Animation",
+    "Pop Culture"
+  ],
+  "Potpourri": [
+    "Hodgepodge",
+    "Common Bonds & Stupid Answers",
+    "Notable Names"
+  ]
+}

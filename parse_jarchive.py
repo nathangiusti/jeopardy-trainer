@@ -6,7 +6,7 @@ import re
 import time
 
 # Configuration - Seasons to parse
-SEASONS_TO_PARSE = []
+SEASONS_TO_PARSE = [42]
 
 # Base URLs
 SEASON_URL = "https://j-archive.com/showseason.php?season={}"

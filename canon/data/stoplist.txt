@@ -1,0 +1,155 @@
+# Mention-extraction stoplist: exact normalized keys that are never
+# studyable entities. One entry per line; '#' starts a comment.
+
+# Clue Crew members, hosts, announcer (first names alone and full names)
+clue crew
+sarah
+jimmy
+kelly
+cheryl
+jon
+sofia
+sarah whitcomb
+sarah whitcomb foss
+jimmy mcguire
+kelly miyahara
+cheryl farrell
+jon cannon
+sofia lidskog
+alex
+alex trebek
+ken jennings
+mayim bialik
+johnny gilbert
+trebek
+
+# Capitalized function / sentence words that slip past sentence detection
+when
+after
+before
+what
+where
+which
+while
+there
+here
+some
+these
+those
+this
+that
+then
+than
+they
+them
+their
+also
+about
+because
+between
+during
+each
+both
+many
+most
+much
+more
+other
+another
+only
+once
+just
+like
+into
+onto
+upon
+over
+under
+around
+through
+without
+within
+along
+among
+across
+against
+name
+named
+seen
+type
+types
+called
+said
+says
+first
+last
+next
+today
+tonight
+yes
+not
+now
+one
+two
+its
+his
+her
+him
+she
+you
+your
+yours
+our
+ours
+who
+whose
+whom
+how
+why
+well
+oh
+hey
+let
+lets
+
+# Sentence-start etymology scaffolding ("From the Latin word for...")
+from the latin
+from the greek
+from the french
+from the old english
+from latin
+from greek
+from french
+
+# Months & days: date scaffolding, not entities
+january
+february
+march
+april
+may
+june
+july
+august
+september
+october
+november
+december
+monday
+tuesday
+wednesday
+thursday
+friday
+saturday
+sunday
+
+# Generic geography-ish scaffolding that adds no study value on its own
+us
+usa
+uk
+mr
+mrs
+ms
+dr
+st
+jr
+sr
