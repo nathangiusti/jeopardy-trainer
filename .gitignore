@@ -1,11 +1,16 @@
-# Output data
-output/
+# Scraped game data
+scraper/output/
 
 # Generated files
-jeopardy_game.html
+game/jeopardy_game.html
 
 # Search results
 search_results_*.csv
+
+# Canon build outputs (contain clue text) - only canon/canon_map.zip is committed
+canon/canon_data.js
+canon/canon_review.csv
+canon/mention_cache.pkl
 
 # Python
 __pycache__/

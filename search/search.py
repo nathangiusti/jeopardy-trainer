@@ -1,4 +1,5 @@
 import csv
+import os
 from datetime import datetime
 from search_core import OUTPUT_DIR, search_clues, calculate_scores
 
@@ -22,7 +23,8 @@ def output_to_csv(results: list[dict], search_term: str):
     frequency_score, value_score = calculate_scores(results)
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
     safe_term = "".join(c if c.isalnum() else "_" for c in search_term)
-    output_file = f"search_results_{safe_term}_{timestamp}.csv"
+    output_file = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                               f"search_results_{safe_term}_{timestamp}.csv")
 
     with open(output_file, 'w', newline='', encoding='utf-8') as f:
         fieldnames = ['date', 'season', 'category', 'value', 'round', 'question', 'answer']

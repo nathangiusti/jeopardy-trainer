@@ -16,9 +16,10 @@ import string
 import unicodedata
 from collections import Counter, defaultdict
 
-REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-OUTPUT_DIR = os.path.join(REPO_ROOT, "output")
-DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
+PKG_DIR = os.path.dirname(os.path.abspath(__file__))
+REPO_ROOT = os.path.dirname(PKG_DIR)
+OUTPUT_DIR = os.path.join(REPO_ROOT, "scraper", "output")
+DATA_DIR = os.path.join(PKG_DIR, "data")
 
 # A surname alias only merges into a full name when that full name is the
 # single frequent answer ending in the surname (rules out "washington").

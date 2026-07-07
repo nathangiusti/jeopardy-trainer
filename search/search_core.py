@@ -5,8 +5,9 @@ import re
 import string
 from datetime import datetime, date
 
-# Repo-root output/, shared with the other programs
-OUTPUT_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "output")
+# Scraped game CSVs, produced by scraper/parse_jarchive.py
+OUTPUT_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                          "scraper", "output")
 RECENCY_DECAY_RATE = 0.001
 FINAL_JEOPARDY_VALUE = 4000
 

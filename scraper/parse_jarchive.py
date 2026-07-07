@@ -12,8 +12,8 @@ SEASONS_TO_PARSE = [42]
 SEASON_URL = "https://j-archive.com/showseason.php?season={}"
 GAME_URL = "https://j-archive.com/showgame.php?game_id={}"
 
-# Output directory (repo-root output/, shared with the other programs)
-OUTPUT_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "output")
+# Scraped game CSVs live here (scraper/output/), read by search, game, and canon
+OUTPUT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "output")
 
 
 def get_game_ids_for_season(season: int) -> list[int]:

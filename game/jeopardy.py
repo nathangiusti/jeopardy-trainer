@@ -15,9 +15,9 @@ from pathlib import Path
 # CONFIGURATION  — edit these to customise
 # ============================================================
 SEASONS = list(range(35, 43))           # Seasons to pick from (35-42 inclusive)
-REPO_ROOT = Path(__file__).resolve().parent.parent
-OUTPUT_DIR = REPO_ROOT / "output"        # Directory containing season CSV data
-HTML_OUTPUT = REPO_ROOT / "jeopardy_game.html"  # Output HTML filename
+GAME_DIR = Path(__file__).resolve().parent
+OUTPUT_DIR = GAME_DIR.parent / "scraper" / "output"  # Season CSV data from the scraper
+HTML_OUTPUT = GAME_DIR / "jeopardy_game.html"        # Output HTML filename
 # ============================================================
 
 

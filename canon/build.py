@@ -17,12 +17,12 @@ from collections import Counter, defaultdict
 
 from . import preprocess, entities as entities_mod, taxonomy, associations as assoc_mod, affixes as affixes_mod, clue_classifier
 
-# Artifacts live in the repo root (canon_map.html must sit next to
+# Artifacts live in canon/ (canon_map.html must sit next to
 # canon_data.js for its relative <script src> to resolve).
-OUT_FILE = os.path.join(preprocess.REPO_ROOT, "canon_data.js")
-HTML_FILE = os.path.join(preprocess.REPO_ROOT, "canon_map.html")
-ZIP_FILE = os.path.join(preprocess.REPO_ROOT, "canon_map.zip")
-REVIEW_FILE = os.path.join(preprocess.REPO_ROOT, "canon_review.csv")
+OUT_FILE = os.path.join(preprocess.PKG_DIR, "canon_data.js")
+HTML_FILE = os.path.join(preprocess.PKG_DIR, "canon_map.html")
+ZIP_FILE = os.path.join(preprocess.PKG_DIR, "canon_map.zip")
+REVIEW_FILE = os.path.join(preprocess.PKG_DIR, "canon_review.csv")
 REVIEW_ROWS = 400
 
 

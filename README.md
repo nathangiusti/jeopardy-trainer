@@ -5,16 +5,15 @@ A toolset for scraping, searching, and playing Jeopardy! games from [J! Archive]
 ## Workflow
 
 ```
-scraper/parse_jarchive.py  →  output/season_XX/*.csv  →  game/jeopardy.py  →  jeopardy_game.html
-                                                       →  search/ (CLI + web UI)
-                                                       →  canon/build.py  →  canon_data.js + canon_map.html
+scraper/parse_jarchive.py  →  scraper/output/season_XX/*.csv  →  game/jeopardy.py  →  game/jeopardy_game.html
+                                                              →  search/ (CLI + web UI, search/search_results_*.csv)
+                                                              →  canon/build.py  →  canon/canon_data.js + canon/canon_map.html
 ```
 
-Each program lives in its own directory (`scraper/`, `search/`, `game/`, `canon/`);
-they all share the repo-root `output/` clue data, and generated artifacts
-(`jeopardy_game.html`, `canon_data.js`, `canon_map.zip`, `canon_review.csv`,
-`mention_cache.pkl`) land in the repo root. All paths are anchored to the repo
-root, so the scripts work from any working directory.
+Each program lives in its own directory (`scraper/`, `search/`, `game/`, `canon/`)
+and writes its outputs there too. The scraped clue data in `scraper/output/` is
+the shared input for search, game, and canon. All paths are anchored via
+`__file__`, so the scripts work from any working directory.
 
 ## Scripts
 
@@ -22,7 +21,7 @@ root, so the scripts work from any working directory.
 
 Scrapes J! Archive and saves game data as CSV files.
 
-Configure `SEASONS_TO_PARSE` at the top of the file, then run it. For each season, it fetches all game IDs, parses each game's clues (Jeopardy, Double Jeopardy, and Final Jeopardy rounds), and writes one CSV per game to `output/season_<N>/YYYY-MM-DD.csv`. Already-downloaded games are skipped automatically.
+Configure `SEASONS_TO_PARSE` at the top of the file, then run it. For each season, it fetches all game IDs, parses each game's clues (Jeopardy, Double Jeopardy, and Final Jeopardy rounds), and writes one CSV per game to `scraper/output/season_<N>/YYYY-MM-DD.csv`. Already-downloaded games are skipped automatically.
 
 Each CSV row contains: `category`, `value`, `round`, `question`, `answer`.
 
@@ -38,13 +37,13 @@ For the CLI, configure `SEARCH_TERM`, `SEARCH_MODE`, and `OUTPUT_MODE` at the to
 - `strict` — matches whole words only, ignoring punctuation
 - `loose` — matches all terms anywhere in the text
 
-Results are ranked by recency and dollar value. Output can go to stdout or be saved as a CSV file (`search_results_*.csv`).
+Results are ranked by recency and dollar value. Output can go to stdout or be saved as a CSV file (`search/search_results_*.csv`).
 
 ### `game/jeopardy.py`
 
 Generates a playable Jeopardy! game as a self-contained HTML file.
 
-Configure `SEASONS` to control which seasons are eligible. Each run picks a random game from the downloaded CSVs, embeds the game data as JSON, and writes `jeopardy_game.html`, which opens automatically in the browser. The game supports score tracking, answer reveal, and correct/wrong/pass buttons.
+Configure `SEASONS` to control which seasons are eligible. Each run picks a random game from the downloaded CSVs, embeds the game data as JSON, and writes `game/jeopardy_game.html`, which opens automatically in the browser. The game supports score tracking, answer reveal, and correct/wrong/pass buttons.
 
 ### `canon/` — Jeopardy! Canon knowledge map
 
@@ -54,15 +53,15 @@ topics the show asks about again and again — from all downloaded CSVs. The goa
 one-off trivia excluded, wordplay decomposed into its underlying facts.
 
 ```bash
-python -m canon.build   # writes canon_data.js (~71 MB, gitignored), then open canon_map.html
+python -m canon.build   # writes canon/canon_data.js (~71 MB), then open canon/canon_map.html
 ```
 
-Each build also writes `canon_map.zip` (gitignored) — `canon_map.html` +
+Each build also writes `canon/canon_map.zip` — `canon_map.html` +
 `canon_data.js`, the complete set of files needed to view the map. Send that
 zip to share the study guide; recipients unzip and open `canon_map.html`.
 
-Rebuild any time; it is deterministic from `output/` + the `canon/data/` files and
-takes ~3 min warm (~10 min cold, when `mention_cache.pkl` has to be rebuilt by NER). This section is the source of truth for how the pipeline works — **keep it
+Rebuild any time; it is deterministic from `scraper/output/` + the `canon/data/` files and
+takes ~3 min warm (~10 min cold, when `canon/mention_cache.pkl` has to be rebuilt by NER). This section is the source of truth for how the pipeline works — **keep it
 updated whenever the pipeline changes.**
 
 #### Pipeline (Python 3.13; scikit-learn + spaCy)
@@ -86,7 +85,7 @@ updated whenever the pipeline changes.**
    (`en_core_web_sm`; PERSON/GPE/ORG/WORK_OF_ART… — never dates or numbers), minus
    `canon/data/stoplist.txt` (Clue Crew names, function words). This is how
    Shakespeare (81× answer, ~750× mentioned) gets his real weight. Results are
-   cached in `mention_cache.pkl` (gitignored) keyed by question hash — a cold run
+   cached in `canon/mention_cache.pkl` (gitignored) keyed by question hash — a cold run
    over all 364k questions takes ~8 min, rebuilds are near-instant. Falls back to
    the old capitalized-run regex if spaCy is missing.
 3. **`canon/entities.py`** — per entity: recency-weighted score
@@ -128,7 +127,7 @@ updated whenever the pipeline changes.**
    floors (*neon* ≠ neo-) and per-affix blocklists (*George* ≠ geo-, *Romania* ≠
    -mania, *thesaurus* ≠ -saurus). Keeps words asked ≥ 2× and families with ≥ 3 words.
 8. **`canon/build.py`** — orchestrates and serializes. Also: **manual-tagging loop**
-   (reads `canon_review.csv` `topic` column → folds into `category_overrides.json` →
+   (reads `canon/canon_review.csv` `topic` column → folds into `category_overrides.json` →
    rewrites the worklist with the top 400 still-unclassified categories + example
    clues) and **Before & After decomposition** — tries, in order: 2-way split at a
    shared word (*Wheel of Fortune cookie*), 3-way chain for BEFORE, DURING & AFTER
@@ -177,7 +176,7 @@ clues). Global type-ahead search covers entity names + aliases + cues.
 `FORMAT_TOPICS` · `preprocess.py`: `SURNAME_MIN_COUNT`, `MENTION_ONLY_MIN_COUNT` ·
 `affixes.py`: `AFFIXES`, `BLOCKLIST`, `MIN_WORD_COUNT`, `MIN_FAMILY_SIZE`,
 `MAX_WORDS_PER_AFFIX` · `clue_classifier.py`: `MIN_CONFIDENCE`, `MAX_FEATURES` ·
-`mentions.py`: `NER_LABELS`, `CACHE_FILE` (delete `mention_cache.pkl` to force a
+`mentions.py`: `NER_LABELS`, `CACHE_FILE` (delete `canon/mention_cache.pkl` to force a
 full re-NER, e.g. after a spaCy model upgrade).
 
 #### Known limitations / next ideas
@@ -214,6 +213,12 @@ pip install -r requirements.txt
 python -m spacy download en_core_web_sm
 ```
 
-## Output
+## Outputs & version control
 
-Game CSVs are saved to `output/` (gitignored). The generated `jeopardy_game.html` is written to the project root.
+Each program writes its outputs into its own directory:
+
+- `scraper/output/` — game CSVs (gitignored: raw question/answer text stays out of version control)
+- `search/search_results_*.csv` — CLI search exports (gitignored, same reason)
+- `game/jeopardy_game.html` — generated game page (gitignored)
+- `canon/canon_data.js`, `canon/canon_review.csv`, `canon/mention_cache.pkl` — canon build outputs (gitignored: all contain or derive from clue text)
+- `canon/canon_map.zip` — the **only** build artifact that is committed; it is the shareable study-guide bundle (`canon_map.html` + `canon_data.js`)
